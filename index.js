@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const urlRouter = require('./routes/url');
 const homeRouter = require('./routes/homeRouter');
+const userRouter = require('./routes/user')
 const URL = require('./models/url');
 const { connectMongo } = require('./connection');
 
@@ -15,22 +16,9 @@ app.set('views', path.resolve('./views'));
 
 connectMongo('mongodb://localhost:27017/urlShortner');
 
+app.use('/', homeRouter);
 app.use('/url', urlRouter);
-app.use('/', homeRouter)
-
-app.get('/url/:shortid', async (req, res) => {
-  const shortURL = req.params.shortid;
-  const entry = await URL.findOneAndUpdate({
-    shortURL,
-  }, {
-    $push : {
-      urlAnalytics : {
-        timestamp : Date.now(),
-      },
-    }
-  });
-  return res.redirect(entry.redirectedURL);
-});
+app.use('/user', userRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running live on http://localhost:${PORT}/`);

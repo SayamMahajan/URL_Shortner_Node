@@ -21,7 +21,22 @@ async function handleGetAnalytics(req, res) {
   return res.json({totalClicks : result.urlAnalytics.length, analytics : result.urlAnalytics});
 }
 
+async function handleGetUrl(req, res){
+  const shortURL = req.params.shortid;
+  const entry = await URL.findOneAndUpdate({
+    shortURL,
+  }, {
+    $push : {
+      urlAnalytics : {
+        timestamp : Date.now(),
+      },
+    }
+  });
+  return res.redirect(entry.redirectedURL);
+}
+
 module.exports = {
   handleGenerateNewURL,
   handleGetAnalytics,
+  handleGetUrl,
 }
