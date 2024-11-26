@@ -10,6 +10,7 @@ async function handleGenerateNewURL(req, res) {
     shortURL : shortURL,
     redirectedURL : body.url,
     urlAnalytics: [],
+    createdBy : req.user._id,
   });
   return res.render("home", {id : shortURL});
   // return res.status(201).json({msg : `successfully created with new url ${shortURL}`});
